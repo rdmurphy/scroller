@@ -17,6 +17,11 @@
 - 👀 Uses a highly-performant **[Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)** to monitor scrolling changes
 - 🙅🏽‍ **No dependencies** (unless you need an [**Intersection Observer** polyfill](#intersection-observer-polyfill) - get it together, Safari!)
 
+## Examples
+
+- [Basic](https://rdmurphy.github.io/scroller/basic)
+- [Sticky graphic](https://rdmurphy.github.io/scroller/sticky)
+
 ## Installation
 
 `@newswire/scroller` is available via `npm`.
@@ -83,6 +88,12 @@ scroller.on('init', () => {
 // starts up the IntersectionObserver
 scroller.init();
 ```
+
+## Known quirks
+
+### iOS Safari
+
+Due to how iOS Safari does not support Intersection Observer (yet), its calculation of distance from the top/bottom of the page is a little funky due to the disappearing/reappearing bars as you scroll. Practically this won't matter (it's triggering in a consistent way, just not exactly how you'd expect), but it may drive you mad if you're looking at the examples and are baffled as to why it's not synced up pefectly.
 
 ## Intersection Observer polyfill?
 
