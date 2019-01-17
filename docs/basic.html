@@ -108,7 +108,7 @@
     <div class="midpoint"></div>
 
     <script src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
-    <script src="../../dist/index.umd.js"></script>
+    <script src="index.umd.js"></script>
     <script>
       function getRandomIntInclusive(min, max) {
         min = Math.ceil(min);
@@ -128,7 +128,7 @@
       document.querySelector('.midpoint').style.top = (1 - offset) * 100 + '%';
 
       const scroller = new Scroller({
-        selectors: '.scroller-item',
+        selector: '.scroller-item',
         offset: offset,
       });
 
@@ -137,11 +137,15 @@
       });
 
       scroller.on('enter', function(d) {
-        console.log(d);
+        console.log('enter:', d);
       });
 
       scroller.on('exit', function(d) {
         d.element.classList.remove('is-active');
+      });
+
+      scroller.on('exit', function(d) {
+        console.log('exit:', d);
       });
 
       scroller.init();

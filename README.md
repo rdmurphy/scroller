@@ -9,13 +9,12 @@
   <a href="https://packagephobia.now.sh/result?p=@newswire/scroller"><img src="https://badgen.net/packagephobia/install/@newswire/scroller" alt="install size"></a>
 </p>
 
-`@newswire/scroller` is a super-tiny library for (most of!) your scrollytelling needs.
+`@newswire/scroller` is a super-tiny library for your scrollytelling needs.
 
 ## Key features
 
 - 🐜 **Less than 560 bytes** gzipped
 - 👀 Uses a highly-performant **[Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)** to monitor scrolling changes
-- 💪 Scene triggering order is **guaranteed**
 - 🙅🏽‍ **No dependencies** (unless you need an [**Intersection Observer** polyfill](#intersection-observer-polyfill) - get it together, Safari!)
 
 ## Installation
@@ -85,7 +84,7 @@ scroller.on('init', () => {
 scroller.init();
 ```
 
-## Intersection Observer Polyfill?
+## Intersection Observer polyfill?
 
 To keep the library lean, `@newswire/scroller` intentionally does not attempt to polyfill `IntersectionObserver` and leaves that task up to the user if necessary. Browser support is actually [pretty good](https://caniuse.com/#feat=intersectionobserver)! But our friends using Safari (both desktop and iOS) still need a polyfill for `@newswire/scroller` to work. (Good news! [They're working on it](https://bugs.webkit.org/show_bug.cgi?id=159475).)
 
