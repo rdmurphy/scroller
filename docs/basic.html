@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>@newswire/scroll basic</title>
+    <style>
+      html {
+        box-sizing: border-box;
+      }
+
+      *,
+      *:before,
+      *:after {
+        box-sizing: inherit;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 600px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .intro-text {
+        margin-bottom: 30vh;
+      }
+
+      .intro-text p {
+        line-height: 1.5;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 600px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .scroller-container {
+        margin-bottom: 60vh;
+      }
+
+      .scroller-item {
+        align-items: center;
+        font-family: monospace;
+        background-color: lightyellow;
+        color: grey;
+        display: flex;
+        font-size: 1.25rem;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .scroller-item.is-active {
+        background-color: paleturquoise;
+      }
+
+      .midpoint {
+        border-top: 2px dotted black;
+        height: 0px;
+        left: 0px;
+        position: fixed;
+        width: 100%;
+        z-index: 9000;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>@newswire/scroll basic example</h1>
+    <div class="intro-text">
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet modi
+        accusamus fuga, itaque assumenda repellat cumque minus sunt voluptatibus
+        officia corrupti voluptatem aut explicabo dignissimos recusandae
+        nesciunt similique? Praesentium tempore maiores officiis assumenda
+        similique ipsam amet, magnam possimus modi. Totam, laborum. Aut harum
+        est, consequatur quas rerum explicabo ad ut.
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident non
+        sequi eveniet ea aliquam dolorem vel perspiciatis voluptatem sapiente,
+        consequuntur, iste eligendi. Excepturi aspernatur maxime sed. Autem
+        consectetur maxime non nostrum, aspernatur sint ex minima maiores unde
+        odit obcaecati fugit cumque minus laboriosam, exercitationem
+        voluptatibus.
+      </p>
+    </div>
+    <div class="scroller-container">
+      <div class="scroller-item">Scene 1</div>
+      <div class="scroller-item">Scene 2</div>
+      <div class="scroller-item">Scene 3</div>
+      <div class="scroller-item">Scene 4</div>
+      <div class="scroller-item">Scene 5</div>
+      <div class="scroller-item">Scene 6</div>
+      <div class="scroller-item">Scene 7</div>
+      <div class="scroller-item">Scene 8</div>
+    </div>
+
+    <div class="midpoint"></div>
+
+    <script src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
+    <script src="../../dist/index.umd.js"></script>
+    <script>
+      function getRandomIntInclusive(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
+      }
+
+      var items = document.querySelectorAll('.scroller-item');
+
+      for (var i = 0; i < items.length; i++) {
+        const el = items[i];
+        el.style.padding = getRandomIntInclusive(200, 400) + 'px 0';
+      }
+
+      const offset = 0.5;
+
+      document.querySelector('.midpoint').style.top = (1 - offset) * 100 + '%';
+
+      const scroller = new Scroller({
+        selectors: '.scroller-item',
+        offset: offset,
+      });
+
+      scroller.on('enter', function(d) {
+        d.element.classList.add('is-active');
+      });
+
+      scroller.on('enter', function(d) {
+        console.log(d);
+      });
+
+      scroller.on('exit', function(d) {
+        d.element.classList.remove('is-active');
+      });
+
+      scroller.init();
+    </script>
+  </body>
+</html>

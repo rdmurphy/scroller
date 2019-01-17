@@ -1,0 +1,61 @@
+{
+  "name": "@newswire/scroller",
+  "version": "0.1.0",
+  "description": "The tiniest scrolly-teller around.",
+  "main": "dist/index.js",
+  "umd:main": "dist/index.umd.js",
+  "unpkg": "dist/index.umd.js",
+  "module": "dist/index.mjs",
+  "scripts": {
+    "build": "microbundle src/index.mjs -f cjs,es,umd --target web --name Scroller",
+    "build:watch": "microbundle watch src/index.mjs -f cjs,es,umd --target web --name Scroller",
+    "bundlesize": "bundlesize",
+    "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rdmurphy/scroller.git"
+  },
+  "keywords": [
+    "scrollytelling",
+    "storytelling",
+    "interactive",
+    "graphics",
+    "journalism"
+  ],
+  "author": "Ryan Murphy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rdmurphy/scroller/issues"
+  },
+  "homepage": "https://github.com/rdmurphy/scroller#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@zeit/git-hooks": "^0.1.4",
+    "agadoo": "^1.0.1",
+    "bundlesize": "^0.17.1",
+    "documentation": "^9.1.1",
+    "jest": "^23.6.0",
+    "microbundle": "^0.9.0",
+    "precise-commits": "^1.0.2",
+    "prettier": "^1.15.3"
+  },
+  "prettier": {
+    "bracketSpacing": true,
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5"
+  },
+  "bundlesize": [
+    {
+      "path": "./dist/*.{js,mjs}",
+      "maxSize": "600B"
+    }
+  ],
+  "mangle": {
+    "regex": "_$"
+  }
+}
