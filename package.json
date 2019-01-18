@@ -1,7 +1,7 @@
 {
   "name": "@newswire/scroller",
   "version": "0.1.0",
-  "description": "The tiniest scrolly-teller around.",
+  "description": "The tiniest scrollyteller around.",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
   "unpkg": "dist/index.umd.js",
