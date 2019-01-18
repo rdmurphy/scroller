@@ -13,7 +13,7 @@
 
 ## Key features
 
-- 🐜 **Less than 570 bytes** gzipped
+- 🐜 **Less than 600 bytes** gzipped
 - 👀 Uses a highly-performant **[Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)** to monitor scrolling changes
 - 🙅🏽‍ **No dependencies** (unless you need an [**Intersection Observer** polyfill](#intersection-observer-polyfill) - get it together, Safari!)
 
