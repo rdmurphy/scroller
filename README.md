@@ -3,7 +3,7 @@
 </h1>
 <p align="center">
   <a href="https://www.npmjs.org/package/@newswire/scroller"><img src="https://badgen.net/npm/v/@newswire/scroller" alt="npm"></a>
-  <a href="https://david-dm.org/rdmurphy/scroll"><img src="https://badgen.net/david/dep/rdmurphy/scroll" alt="dependencies"></a>
+  <a href="https://david-dm.org/rdmurphy/scroller"><img src="https://badgen.net/david/dep/rdmurphy/scroller" alt="dependencies"></a>
   <a href="https://unpkg.com/@newswire/scroller/dist/index.umd.js"><img src="https://badgen.net/badgesize/gzip/https://unpkg.com/@newswire/scroller/dist/index.umd.js" alt="gzip size"></a>
   <a href="https://unpkg.com/@newswire/scroller/dist/index.umd.js"><img src="https://badgen.net/badgesize/brotli/https://unpkg.com/@newswire/scroller/dist/index.umd.js" alt="brotli size"></a>
   <a href="https://packagephobia.now.sh/result?p=@newswire/scroller"><img src="https://badgen.net/packagephobia/install/@newswire/scroller" alt="install size"></a>
