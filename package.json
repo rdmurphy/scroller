@@ -12,7 +12,8 @@
     "build:watch": "microbundle watch src/index.mjs -f cjs,es,umd --target web --name Scroller",
     "bundlesize": "bundlesize",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
-    "test": "jest"
+    "prerelease": "npm run build && npm run bundlesize && agadoo",
+    "release": "git commit -am \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "repository": {
     "type": "git",
@@ -37,7 +38,6 @@
     "agadoo": "^1.0.1",
     "bundlesize": "^0.17.1",
     "documentation": "^9.1.1",
-    "jest": "^23.6.0",
     "microbundle": "^0.9.0",
     "precise-commits": "^1.0.2",
     "prettier": "^1.15.3"
