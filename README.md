@@ -43,7 +43,9 @@ You can also import it as a module via unpkg!
 <script type="module">
   import Scroller from 'https://unpkg.com/@newswire/scroller/dist/index.mjs';
 
-  const scroller = new Scroller({ selector: '.scene' });
+  const scroller = new Scroller({
+    scenes: document.querySelectorAll('.scene'),
+  });
 </script>
 ```
 
