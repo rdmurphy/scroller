@@ -13,7 +13,7 @@
 
 ## Key features
 
-- 🐜 **Less than 560 bytes** gzipped
+- 🐜 **Less than 570 bytes** gzipped
 - 👀 Uses a highly-performant **[Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)** to monitor scrolling changes
 - 🙅🏽‍ **No dependencies** (unless you need an [**Intersection Observer** polyfill](#intersection-observer-polyfill) - get it together, Safari!)
 
@@ -66,18 +66,20 @@ To begin tracking the progression of the scenes, we need to set up our `Scroller
 ```js
 import Scroller from '@newswire/scroller';
 
-// sets up the scroller instance, pass in the `selector` to find all the scenes
-const scroller = new Scroller({ selector: '.scene' });
+// sets up the scroller instance, pass in an array of all the scenes
+const scroller = new Scroller({
+  scenes: document.querySelectorAll('.scene'),
+});
 
 // Scroller has a tiny event emitter embedded in it!
 
 // the `enter` event is triggered every time a scene crosses the threshold
-scroller.on('enter', d => {
+scroller.on('scene:enter', d => {
   d.element.classList.add('active');
 });
 
 // the `exit` event is triggered every time a scene exits the threshold
-scroller.on('exit', d => {
+scroller.on('scene:exit', d => {
   d.element.classList.remove('active');
 });
 
@@ -89,11 +91,47 @@ scroller.on('init', () => {
 scroller.init();
 ```
 
+If you need to additionally track the "container" of your scenes, `Scroller` can track and alert you about that too.
+
+```js
+import Scroller from '@newswire/scroller';
+
+// sets up the scroller instance, pass in the container and an array of all the scenes
+const scroller = new Scroller({
+  container: document.querySelector('#scene-container'),
+  scenes: document.querySelectorAll('.scene'),
+});
+
+// the `enter` event works as you expect with scenes...
+scroller.on('scene:enter', d => {
+  d.element.classList.add('active');
+});
+
+scroller.on('scene:exit', d => {
+  d.element.classList.remove('active');
+});
+
+// ...but if a container is passed, events fire for it as well!
+scroller.on('container:enter', d => {
+  console.log("Let's go!");
+});
+
+scroller.on('container:exit', d => {
+  console.log('We are done here.');
+});
+
+scroller.init();
+```
+
 ## Known quirks
 
 ### iOS Safari
 
-Due to how iOS Safari does not support Intersection Observer (yet), its calculation of distance from the top/bottom of the page is a little funky due to the disappearing/reappearing bars as you scroll. Practically this won't matter (it's triggering in a consistent way, just not exactly how you'd expect), but it may drive you mad if you're looking at the examples and are baffled as to why it's not synced up pefectly.
+Due to how iOS Safari does not support Intersection Observer (yet), its calculation of distance from the top/bottom of the page is a little funky due to the disappearing/reappearing bars as you scroll. Practically this won't matter (it's triggering in a consistent way, but not exactly how you'd expect), but it may drive you mad if you're looking at the examples and are baffled as to why it's not synced up perfectly.
+
+### Intersection Observer pre-check
+
+This is less a quirk (and in some ways a feature) and more how Intersection Observer works. Whenever an element gets added to an Intersection Observer instance, it is immediately checked for intersection. In the context of `Scroller`, this means that if it is instantiated on load of a page and none of its elements are currently intersecting, `scene:exit` (and possibly `container:exit` if you provided one) are going to all fire as they fail that initial check. The good thing is this is _also_ true for the `*:enter` events, so nothing special is necessary for detecting if someone loads in the middle of your interactive. Make sure the code in your event listeners are prepared for this and have some way to determine whether anything in your `*:exit` listeners are needed yet!
 
 ## Intersection Observer polyfill?
 
@@ -155,10 +193,14 @@ This is similar to the `polyfill.io` method, but without a service in-between de
     - [Examples](#examples-2)
   - [init](#init)
     - [Examples](#examples-3)
-- [Scroller#enter](#scrollerenter)
+- [Scroller#container:enter](#scrollercontainerenter)
   - [Properties](#properties-1)
-- [Scroller#exit](#scrollerexit)
+- [Scroller#scene:enter](#scrollersceneenter)
   - [Properties](#properties-2)
+- [Scroller#container:exit](#scrollercontainerexit)
+  - [Properties](#properties-3)
+- [Scroller#scene:exit](#scrollersceneexit)
+  - [Properties](#properties-4)
 - [Scroller#init](#scrollerinit)
 
 ### Scroller
@@ -169,25 +211,29 @@ elements for scrollytelling.
 #### Parameters
 
 - `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+  - `options.container` **[Element](https://developer.mozilla.org/docs/Web/API/Element)?** Optionally pass in what should be
+    considered the containing element of all the scenes - this gets added to the
+    Intersection Observer instance and additionally fires its own events
   - `options.offset` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** How far from the top/bottom of the viewable
     area to trigger enters/exits of scenes, represented as a value between
     0 and 1 (optional, default `0.5`)
-  - `options.selector` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** The CSS selector to pass to
-    querySelectorAll to find all of the scenes
+  - `options.scenes` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Element](https://developer.mozilla.org/docs/Web/API/Element)>** An array of all the Elements to be
+    considered scenes of this Scroller
 
 #### Properties
 
 - `observer` **(IntersectionObserver | null)** Once initialized, a reference
   to the Scroller's instance of IntersectionObserver
-- `scenes` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;[Element](https://developer.mozilla.org/docs/Web/API/Element)>** All of the elements found by Scroller after it
-  was initialized
 
 #### Examples
 
 ```javascript
 import Scroller from '@newswire/scroller';
 
-const scroller = new Scroller({ selector: '.scene' });
+const scroller = new Scroller({
+  scenes: document.querySelectorAll('.scenes'),
+});
+
 scroller.init();
 ```
 
@@ -203,12 +249,14 @@ Adds a callback to the queue of a given event listener.
 ##### Examples
 
 ```javascript
-const scroller = new Scroller({ selector: '.scene' });
+const scroller = new Scroller({
+  scenes: document.querySelectorAll('.scenes')
+});
 
 const fn = (...) => {...};
 
 // adds callback to listener
-scroller.on('enter', fn);
+scroller.on('scene:enter', fn);
 ```
 
 Returns **void**
@@ -225,15 +273,17 @@ Removes a callback from the queue of a given event listener.
 ##### Examples
 
 ```javascript
-const scroller = new Scroller({ selector: '.scene' });
+const scroller = new Scroller({
+  scenes: document.querySelectorAll('.scenes')
+});
 
 const fn = (...) => {...};
 
 // adds callback to listener
-scroller.on('enter', fn);
+scroller.on('scene:enter', fn);
 
 // removes callback from listener
-scroller.off('enter', fn);
+scroller.off('scene:enter', fn);
 ```
 
 Returns **void**
@@ -246,16 +296,32 @@ any intersection events that occur.
 ##### Examples
 
 ```javascript
-const scroller = new Scroller({ selector: '.scene' });
+const scroller = new Scroller({
+  scenes: document.querySelectorAll('.scenes'),
+});
 
 scroller.init();
 ```
 
 Returns **void**
 
-### Scroller#enter
+### Scroller#container:enter
 
-Enter event. Fires whenever a scene begins intersecting.
+Container enter event. Fires whenever the container begins intersecting.
+
+Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+#### Properties
+
+- `bounds` **DOMRectReadOnly** The bounds of the active element
+- `element` **[Element](https://developer.mozilla.org/docs/Web/API/Element)** The element that intersected
+- `index` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** This is always -1 on the container
+- `isScrollingDown` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Whether the user triggered this element
+  while scrolling down or not
+
+### Scroller#scene:enter
+
+Scene enter event. Fires whenever a scene begins intersecting.
 
 Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
 
@@ -267,9 +333,23 @@ Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 - `isScrollingDown` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Whether the user triggered this element
   while scrolling down or not
 
-### Scroller#exit
+### Scroller#container:exit
 
-Exit event. Fires whenever a scene has exited.
+Container exit event. Fires whenever the container has exited.
+
+Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+#### Properties
+
+- `bounds` **DOMRectReadOnly** The bounds of the exiting element
+- `element` **[Element](https://developer.mozilla.org/docs/Web/API/Element)** The element that exited
+- `index` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** This is always -1 on the container
+- `isScrollingDown` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Whether the user triggering the exit
+  while scrolling down or not
+
+### Scroller#scene:exit
+
+Scene enter event. Fires whenever a scene has exited.
 
 Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
 

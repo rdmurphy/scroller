@@ -3,33 +3,37 @@
  * elements for scrollytelling.
  *
  * @param {object} options
+ * @param {Element} [options.container] Optionally pass in what should be
+ * considered the containing element of all the scenes - this gets added to the
+ * Intersection Observer instance and additionally fires its own events
  * @param {Number} [options.offset] How far from the top/bottom of the viewable
  * area to trigger enters/exits of scenes, represented as a value between
  * 0 and 1
- * @param {string} options.selector The CSS selector to pass to
- * querySelectorAll to find all of the scenes
+ * @param {Element[]} options.scenes An array of all the Elements to be
+ * considered scenes of this Scroller
  * @property {IntersectionObserver|null} observer Once initialized, a reference
  * to the Scroller's instance of IntersectionObserver
- * @property {Element[]} scenes All of the elements found by Scroller after it
- * was initialized
  * @example
  *
  * import Scroller from '@newswire/scroller';
  *
- * const scroller = new Scroller({ selector: '.scene' });
+ * const scroller = new Scroller({
+ *   scenes: document.querySelectorAll('.scenes')
+ * });
+ *
  * scroller.init();
  */
 class Scroller {
-  constructor({ offset = 0.5, selector }) {
+  constructor({ container, offset = 0.5, scenes }) {
     // public
     this.observer = null;
-    this.scenes = [];
 
     // private
     this.all_ = {};
+    this.container_ = container;
     this.offset_ = offset;
     this.previousOffset_ = 0;
-    this.selector_ = selector;
+    this.scenes_ = scenes;
   }
 
   /**
@@ -40,12 +44,14 @@ class Scroller {
    * @returns {void}
    * @example
    *
-   * const scroller = new Scroller({ selector: '.scene' });
+   * const scroller = new Scroller({
+   *   scenes: document.querySelectorAll('.scenes')
+   * });
    *
    * const fn = (...) => {...};
    *
    * // adds callback to listener
-   * scroller.on('enter', fn);
+   * scroller.on('scene:enter', fn);
    */
   on(type, handler) {
     (this.all_[type] || (this.all_[type] = [])).push(handler);
@@ -59,15 +65,17 @@ class Scroller {
    * @returns {void}
    * @example
    *
-   * const scroller = new Scroller({ selector: '.scene' });
+   * const scroller = new Scroller({
+   *   scenes: document.querySelectorAll('.scenes')
+   * });
    *
    * const fn = (...) => {...};
    *
    * // adds callback to listener
-   * scroller.on('enter', fn);
+   * scroller.on('scene:enter', fn);
    *
    * // removes callback from listener
-   * scroller.off('enter', fn);
+   * scroller.off('scene:enter', fn);
    */
   off(type, handler) {
     if (this.all_[type]) {
@@ -96,30 +104,47 @@ class Scroller {
    * @returns {void}
    * @example
    *
-   * const scroller = new Scroller({ selector: '.scene' });
+   * const scroller = new Scroller({
+   *   scenes: document.querySelectorAll('.scenes')
+   * });
    *
    * scroller.init();
    */
   init() {
-    const scenes = document.querySelectorAll(this.selector_);
+    const observed = [];
 
     this.observer = new IntersectionObserver(
       entries => {
         const isScrollingDown = this.getDirection_();
 
         entries.forEach(entry => {
+          const element = entry.target;
+
           const payload = {
             bounds: entry.boundingClientRect,
-            element: entry.target,
-            index: this.scenes.indexOf(entry.target),
+            element,
+            index: observed.indexOf(element),
             isScrollingDown,
           };
 
+          const prefix = element === this.container_ ? 'container' : 'scene';
+
           if (entry.isIntersecting) {
             /**
-             * Enter event. Fires whenever a scene begins intersecting.
+             * Container enter event. Fires whenever the container begins intersecting.
              *
-             * @event Scroller#enter
+             * @event Scroller#container:enter
+             * @type {object}
+             * @property {DOMRectReadOnly} bounds The bounds of the active element
+             * @property {Element} element The element that intersected
+             * @property {number} index This is always -1 on the container
+             * @property {boolean} isScrollingDown Whether the user triggered this element
+             * while scrolling down or not
+             */
+            /**
+             * Scene enter event. Fires whenever a scene begins intersecting.
+             *
+             * @event Scroller#scene:enter
              * @type {object}
              * @property {DOMRectReadOnly} bounds The bounds of the active element
              * @property {Element} element The element that intersected
@@ -127,12 +152,23 @@ class Scroller {
              * @property {boolean} isScrollingDown Whether the user triggered this element
              * while scrolling down or not
              */
-            this.emit_('enter', payload);
+            this.emit_(`${prefix}:enter`, payload);
           } else {
             /**
-             * Exit event. Fires whenever a scene has exited.
+             * Container exit event. Fires whenever the container has exited.
              *
-             * @event Scroller#exit
+             * @event Scroller#container:exit
+             * @type {object}
+             * @property {DOMRectReadOnly} bounds The bounds of the exiting element
+             * @property {Element} element The element that exited
+             * @property {number} index This is always -1 on the container
+             * @property {boolean} isScrollingDown Whether the user triggering the exit
+             * while scrolling down or not
+             */
+            /**
+             * Scene enter event. Fires whenever a scene has exited.
+             *
+             * @event Scroller#scene:exit
              * @type {object}
              * @property {DOMRectReadOnly} bounds The bounds of the exiting element
              * @property {Element} element The element that exited
@@ -140,7 +176,7 @@ class Scroller {
              * @property {boolean} isScrollingDown Whether the user triggering the exit
              * while scrolling down or not
              */
-            this.emit_('exit', payload);
+            this.emit_(`${prefix}:exit`, payload);
           }
         });
       },
@@ -149,12 +185,15 @@ class Scroller {
       }
     );
 
-    for (let i = 0; i < scenes.length; i++) {
-      const item = scenes[i];
+    for (let i = 0; i < this.scenes_.length; i++) {
+      const item = this.scenes_[i];
 
-      this.scenes.push(item);
+      observed.push(item);
       this.observer.observe(item);
     }
+
+    // a container is not required, but if provided we'll track it
+    if (this.container_) this.observer.observe(this.container_);
 
     /**
      * Init event. Fires once Scroller has finished setting up.

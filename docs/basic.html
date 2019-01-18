@@ -49,7 +49,7 @@
         margin-bottom: 60vh;
       }
 
-      .scroller-item {
+      .scene {
         align-items: center;
         font-family: monospace;
         background-color: lightyellow;
@@ -60,7 +60,7 @@
         width: 100%;
       }
 
-      .scroller-item.is-active {
+      .scene.is-active {
         background-color: paleturquoise;
       }
 
@@ -95,14 +95,14 @@
       </p>
     </div>
     <div class="scroller-container">
-      <div class="scroller-item">Scene 1</div>
-      <div class="scroller-item">Scene 2</div>
-      <div class="scroller-item">Scene 3</div>
-      <div class="scroller-item">Scene 4</div>
-      <div class="scroller-item">Scene 5</div>
-      <div class="scroller-item">Scene 6</div>
-      <div class="scroller-item">Scene 7</div>
-      <div class="scroller-item">Scene 8</div>
+      <div class="scene">Scene 1</div>
+      <div class="scene">Scene 2</div>
+      <div class="scene">Scene 3</div>
+      <div class="scene">Scene 4</div>
+      <div class="scene">Scene 5</div>
+      <div class="scene">Scene 6</div>
+      <div class="scene">Scene 7</div>
+      <div class="scene">Scene 8</div>
     </div>
 
     <div class="midpoint"></div>
@@ -116,10 +116,10 @@
         return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
       }
 
-      var items = document.querySelectorAll('.scroller-item');
+      var scenes = document.querySelectorAll('.scene');
 
-      for (var i = 0; i < items.length; i++) {
-        const el = items[i];
+      for (var i = 0; i < scenes.length; i++) {
+        const el = scenes[i];
         el.style.padding = getRandomIntInclusive(200, 400) + 'px 0';
       }
 
@@ -128,23 +128,24 @@
       document.querySelector('.midpoint').style.top = (1 - offset) * 100 + '%';
 
       const scroller = new Scroller({
-        selector: '.scroller-item',
+        container: document.querySelector('.scroller-container'),
+        scenes: scenes,
         offset: offset,
       });
 
-      scroller.on('enter', function(d) {
+      scroller.on('scene:enter', function(d) {
         d.element.classList.add('is-active');
       });
 
-      scroller.on('enter', function(d) {
+      scroller.on('container:enter', function(d) {
         console.log('enter:', d);
       });
 
-      scroller.on('exit', function(d) {
+      scroller.on('scene:exit', function(d) {
         d.element.classList.remove('is-active');
       });
 
-      scroller.on('exit', function(d) {
+      scroller.on('container:exit', function(d) {
         console.log('exit:', d);
       });
 
