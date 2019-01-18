@@ -98,7 +98,7 @@ import Scroller from '@newswire/scroller';
 
 // sets up the scroller instance, pass in the container and an array of all the scenes
 const scroller = new Scroller({
-  container: document.querySelector('#scene-container'),
+  container: document.querySelector('.container'),
   scenes: document.querySelectorAll('.scene'),
 });
 
