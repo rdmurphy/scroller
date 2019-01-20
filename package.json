@@ -8,7 +8,7 @@
   "module": "dist/index.mjs",
   "scripts": {
     "build": "microbundle src/index.mjs -f cjs,es,umd --target web --name Scroller && npm run build:copy",
-    "build:copy": "cp dist/index.umd.js docs/",
+    "build:copy": "cp dist/index.umd.* docs/",
     "build:watch": "microbundle watch src/index.mjs -f cjs,es,umd --target web --name Scroller",
     "bundlesize": "bundlesize",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
