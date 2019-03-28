@@ -113,6 +113,9 @@ class Scroller {
   init() {
     const observed = [];
 
+    const marginTop = Math.ceil(-100 * (1 - this.offset_));
+    const marginBottom = Math.ceil(-100 * this.offset_);
+
     this.observer = new IntersectionObserver(
       entries => {
         const isScrollingDown = this.getDirection_();
@@ -181,7 +184,7 @@ class Scroller {
         });
       },
       {
-        rootMargin: `${-100 * (1 - this.offset_)}% 0px ${-100 * this.offset_}%`,
+        rootMargin: `${marginTop}% 0px ${marginBottom}%`,
       }
     );
 
