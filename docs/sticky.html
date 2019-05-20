@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>@newswire/scroller sticky</title>
     <style>
       html {
@@ -11,14 +11,13 @@
       }
 
       *,
-      *:before,
-      *:after {
+      *:after,
+      *:before {
         box-sizing: inherit;
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-          Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         margin: 0;
       }
 
@@ -47,8 +46,8 @@
 
       .midpoint {
         border-top: 2px dotted black;
-        height: 0px;
-        left: 0px;
+        height: 0;
+        left: 0;
         position: fixed;
         top: 67%;
         width: 100%;
@@ -137,20 +136,10 @@
     <h1>@newswire/scroller sticky example</h1>
     <div class="intro-text">
       <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet modi
-        accusamus fuga, itaque assumenda repellat cumque minus sunt voluptatibus
-        officia corrupti voluptatem aut explicabo dignissimos recusandae
-        nesciunt similique? Praesentium tempore maiores officiis assumenda
-        similique ipsam amet, magnam possimus modi. Totam, laborum. Aut harum
-        est, consequatur quas rerum explicabo ad ut.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet modi accusamus fuga, itaque assumenda repellat cumque minus sunt voluptatibus officia corrupti voluptatem aut explicabo dignissimos recusandae nesciunt similique? Praesentium tempore maiores officiis assumenda similique ipsam amet, magnam possimus modi. Totam, laborum. Aut harum est, consequatur quas rerum explicabo ad ut.
       </p>
       <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident non
-        sequi eveniet ea aliquam dolorem vel perspiciatis voluptatem sapiente,
-        consequuntur, iste eligendi. Excepturi aspernatur maxime sed. Autem
-        consectetur maxime non nostrum, aspernatur sint ex minima maiores unde
-        odit obcaecati fugit cumque minus laboriosam, exercitationem
-        voluptatibus.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident non sequi eveniet ea aliquam dolorem vel perspiciatis voluptatem sapiente, consequuntur, iste eligendi. Excepturi aspernatur maxime sed. Autem consectetur maxime non nostrum, aspernatur sint ex minima maiores unde odit obcaecati fugit cumque minus laboriosam, exercitationem voluptatibus.
       </p>
     </div>
     <div class="scroller-container">
@@ -188,32 +177,38 @@
         el.style.padding = getRandomIntInclusive(200, 400) + 'px 0';
       }
 
-      var offset = 3 / 4;
+      var offset = 0.3;
 
-      document.querySelector('.midpoint').style.top = (1 - offset) * 100 + '%';
+      document
+        .querySelector('.midpoint')
+        .style
+        .top = (1 - offset) * 100 + '%';
 
-      var scroller = new Scroller({
-        container: document.querySelector('.scroller-container'),
-        scenes: scenes,
-        offset: offset,
-      });
+      var scroller = new Scroller({container: document.querySelector('.scroller-container'), scenes: scenes, offset: offset});
 
       var graphic = document.querySelector('.graphic');
 
-      scroller.on('scene:enter', function(d) {
-        d.element.classList.add('is-active');
-        graphic.textContent = 'Scene Graphic ' + (d.index + 1);
+      scroller.on('scene:enter', function (d) {
+        d
+          .element
+          .classList
+          .add('is-active');
+        graphic.textContent = 'Scene Graphic ' + (
+        d.index + 1);
       });
 
-      scroller.on('container:enter', function(d) {
+      scroller.on('container:enter', function (d) {
         console.log('enter:', d);
       });
 
-      scroller.on('scene:exit', function(d) {
-        d.element.classList.remove('is-active');
+      scroller.on('scene:exit', function (d) {
+        d
+          .element
+          .classList
+          .remove('is-active');
       });
 
-      scroller.on('container:exit', function(d) {
+      scroller.on('container:exit', function (d) {
         console.log('exit:', d);
         graphic.textContent = 'Waiting to be activated';
       });

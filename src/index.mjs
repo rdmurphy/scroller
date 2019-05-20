@@ -25,13 +25,16 @@
  */
 class Scroller {
   constructor({ container, offset = 0.5, scenes }) {
+    // internal
+    const fuzz = 0.01;
+
     // public
     this.observer = null;
 
     // private
     this.all_ = {};
     this.container_ = container;
-    this.offset_ = offset;
+    this.offset_ = offset + fuzz;
     this.previousOffset_ = 0;
     this.scenes_ = scenes;
   }

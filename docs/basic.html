@@ -11,8 +11,8 @@
       }
 
       *,
-      *:before,
-      *:after {
+      *:after,
+      *:before {
         box-sizing: inherit;
       }
 
@@ -57,6 +57,8 @@
         display: flex;
         font-size: 1.25rem;
         justify-content: center;
+        margin-bottom: 1rem;
+        margin-top: 1rem;
         width: 100%;
       }
 
@@ -64,10 +66,14 @@
         background-color: paleturquoise;
       }
 
+      .scene.just-exited {
+        background-color: pink;
+      }
+
       .midpoint {
         border-top: 2px dotted black;
-        height: 0px;
-        left: 0px;
+        height: 0;
+        left: 0;
         position: fixed;
         width: 100%;
         z-index: 9000;
@@ -75,25 +81,15 @@
     </style>
   </head>
   <body>
-    <h1>@newswire/scroll basic example</h1>
+    <!-- <h1>@newswire/scroll basic example</h1>
     <div class="intro-text">
       <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet modi
-        accusamus fuga, itaque assumenda repellat cumque minus sunt voluptatibus
-        officia corrupti voluptatem aut explicabo dignissimos recusandae
-        nesciunt similique? Praesentium tempore maiores officiis assumenda
-        similique ipsam amet, magnam possimus modi. Totam, laborum. Aut harum
-        est, consequatur quas rerum explicabo ad ut.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet modi accusamus fuga, itaque assumenda repellat cumque minus sunt voluptatibus officia corrupti voluptatem aut explicabo dignissimos recusandae nesciunt similique? Praesentium tempore maiores officiis assumenda similique ipsam amet, magnam possimus modi. Totam, laborum. Aut harum est, consequatur quas rerum explicabo ad ut.
       </p>
       <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident non
-        sequi eveniet ea aliquam dolorem vel perspiciatis voluptatem sapiente,
-        consequuntur, iste eligendi. Excepturi aspernatur maxime sed. Autem
-        consectetur maxime non nostrum, aspernatur sint ex minima maiores unde
-        odit obcaecati fugit cumque minus laboriosam, exercitationem
-        voluptatibus.
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident non sequi eveniet ea aliquam dolorem vel perspiciatis voluptatem sapiente, consequuntur, iste eligendi. Excepturi aspernatur maxime sed. Autem consectetur maxime non nostrum, aspernatur sint ex minima maiores unde odit obcaecati fugit cumque minus laboriosam, exercitationem voluptatibus.
       </p>
-    </div>
+    </div> -->
     <div class="scroller-container">
       <div class="scene">Scene 1</div>
       <div class="scene">Scene 2</div>
@@ -107,7 +103,11 @@
 
     <div class="midpoint"></div>
 
-    <script src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
+    <script>
+      // delete window.IntersectionObserver;
+      // delete window.IntersectionObserverEntry;
+    </script>
+    <script src="https://unpkg.com/intersection-observer/intersection-observer"></script>
     <script src="index.umd.js"></script>
     <script>
       function getRandomIntInclusive(min, max) {
@@ -123,9 +123,10 @@
         el.style.padding = getRandomIntInclusive(200, 400) + 'px 0';
       }
 
-      const offset = 0.5;
+      const offset = 0.7;
 
-      document.querySelector('.midpoint').style.top = (1 - offset) * 100 + '%';
+      document.querySelector('.midpoint').style.top =
+        (1 - (offset + 0.01)) * 100 + '%';
 
       const scroller = new Scroller({
         container: document.querySelector('.scroller-container'),
@@ -135,6 +136,7 @@
 
       scroller.on('scene:enter', function(d) {
         d.element.classList.add('is-active');
+        d.element.classList.remove('just-exited');
       });
 
       scroller.on('container:enter', function(d) {
@@ -142,7 +144,12 @@
       });
 
       scroller.on('scene:exit', function(d) {
+        for (var i = 0; i < scenes.length; i++) {
+          scenes[i].classList.remove('just-exited');
+        }
+
         d.element.classList.remove('is-active');
+        d.element.classList.add('just-exited');
       });
 
       scroller.on('container:exit', function(d) {
