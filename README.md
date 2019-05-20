@@ -15,7 +15,7 @@
 
 - 🐜 **Less than 600 bytes** gzipped
 - 👀 Uses a highly-performant **[Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)** to monitor scrolling changes
-- 🙅🏽‍ **No dependencies** (unless you need an [**Intersection Observer** polyfill](#intersection-observer-polyfill) - get it together, Safari!)
+- 🙅🏽‍ **No dependencies** (unless you need an [**Intersection Observer** polyfill](#intersection-observer-polyfill) - [check what browsers you support](https://caniuse.com/#feat=intersectionobserver)!)
 
 ## Examples
 
@@ -137,7 +137,7 @@ This is less a quirk (and in some ways a feature) and more how Intersection Obse
 
 ## Intersection Observer polyfill?
 
-To keep the library lean, `@newswire/scroller` intentionally does not attempt to polyfill `IntersectionObserver` and leaves that task up to the user if necessary. Browser support is actually [pretty good](https://caniuse.com/#feat=intersectionobserver)! But our friends using Safari (both desktop and iOS) still need a polyfill for `@newswire/scroller` to work. (Good news! [They're working on it](https://bugs.webkit.org/show_bug.cgi?id=159475).)
+To keep the library lean, `@newswire/scroller` intentionally does not attempt to polyfill `IntersectionObserver` and leaves that task up to the user if necessary. Browser support is [pretty good](https://caniuse.com/#feat=intersectionobserver)! There's no hard and fast rule here - check what browsers your users are using and make a call.
 
 There are a few good ways to ensure the polyfill is in place.
 
