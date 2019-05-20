@@ -88,7 +88,7 @@ class Scroller {
    *
    * @private
    * @param {string} type Name of the event
-   * @param {*} evt Data to be sent to each callback attached to the listener
+   * @param {*} [evt] Data to be sent to each callback attached to the listener, optional
    * @returns {void}
    */
   emit_(type, evt) {
