@@ -40,7 +40,7 @@
     "documentation": "^12.0.0",
     "microbundle": "^0.11.0",
     "precise-commits": "^1.0.2",
-    "prettier": "^1.17.1"
+    "prettier": "^2.0.2"
   },
   "prettier": {
     "bracketSpacing": true,
