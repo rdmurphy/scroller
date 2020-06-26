@@ -17,26 +17,17 @@ jobs:
       - name: Setup Playwright
         uses: microsoft/playwright-github-action@v1
 
-      - name: Get the installed Node.js version
-        id: node-version
-        run: echo "::set-output name=version::$(node --version)"
-
       - name: Prepare cached Node.js install
         id: cache
         uses: actions/cache@v2
         with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node-${{ steps.node-version.outputs.version }}-${{ hashFiles('**/package.json') }}-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-${{ steps.node_version.outputs.version }}-${{ hashFiles('**/package.json') }}-
-            ${{ runner.os }}-node-${{ steps.node_version.outputs.version }}-
+            ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}-
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        # We only run npm ci if we don't get an exact match of a cache hit
-        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Build the library
