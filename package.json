@@ -40,6 +40,8 @@
     "bundlesize": "^0.18.0",
     "documentation": "^13.0.1",
     "microbundle": "^0.12.2",
+    "mocha": "^8.0.1",
+    "playwright": "^1.1.1",
     "precise-commits": "^1.0.2",
     "prettier": "^2.0.5"
   },

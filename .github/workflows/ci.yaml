@@ -12,7 +12,10 @@ jobs:
       - name: Use Node.js 12.x
         uses: actions/setup-node@v2-beta
         with:
-          node-version: "12"
+          node-version: '12'
+
+      - name: Setup Playwright
+        uses: microsoft/playwright-github-action@v1
 
       - name: Get the installed Node.js version
         id: node-version
