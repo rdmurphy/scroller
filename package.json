@@ -34,22 +34,16 @@
   "homepage": "https://github.com/rdmurphy/scroller#readme",
   "dependencies": {},
   "devDependencies": {
+    "@rdm/prettier-config": "^1.0.1",
     "@zeit/git-hooks": "^0.1.4",
     "agadoo": "^2.0.0",
     "bundlesize": "^0.18.0",
-    "documentation": "^13.0.0",
+    "documentation": "^13.0.1",
     "microbundle": "^0.12.2",
     "precise-commits": "^1.0.2",
-    "prettier": "^1.17.1"
+    "prettier": "^2.0.5"
   },
-  "prettier": {
-    "bracketSpacing": true,
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5"
-  },
+  "prettier": "@rdm/prettier-config",
   "bundlesize": [
     {
       "path": "./dist/*.{js,mjs}",
