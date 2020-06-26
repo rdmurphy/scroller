@@ -41,3 +41,6 @@ jobs:
 
       - name: Build the library
         run: npm run build
+
+      - name: Run tests
+        run: npm run test

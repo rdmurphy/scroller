@@ -13,7 +13,8 @@
     "bundlesize": "bundlesize",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
     "prerelease": "npm run build && npm run bundlesize && agadoo",
-    "release": "git commit -am \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "release": "git commit -am \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
