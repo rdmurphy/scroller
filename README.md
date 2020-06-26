@@ -3,7 +3,6 @@
 </h1>
 <p align="center">
   <a href="https://www.npmjs.org/package/@newswire/scroller"><img src="https://badgen.net/npm/v/@newswire/scroller" alt="npm"></a>
-  <a href="https://david-dm.org/rdmurphy/scroller"><img src="https://badgen.net/david/dep/rdmurphy/scroller" alt="dependencies"></a>
   <a href="https://unpkg.com/@newswire/scroller/dist/index.umd.js"><img src="https://badgen.net/badgesize/gzip/https://unpkg.com/@newswire/scroller/dist/index.umd.js" alt="gzip size"></a>
   <a href="https://unpkg.com/@newswire/scroller/dist/index.umd.js"><img src="https://badgen.net/badgesize/brotli/https://unpkg.com/@newswire/scroller/dist/index.umd.js" alt="brotli size"></a>
   <a href="https://packagephobia.now.sh/result?p=@newswire/scroller"><img src="https://badgen.net/packagephobia/install/@newswire/scroller" alt="install size"></a>
@@ -127,10 +126,6 @@ scroller.init();
 
 ## Known quirks
 
-### iOS Safari
-
-Due to how iOS Safari does not support Intersection Observer (yet), its calculation of distance from the top/bottom of the page is a little funky due to the disappearing/reappearing bars as you scroll. Practically this won't matter (it's triggering in a consistent way, but not exactly how you'd expect), but it may drive you mad if you're looking at the examples and are baffled as to why it's not synced up perfectly.
-
 ### Intersection Observer pre-check
 
 This is less a quirk (and in some ways a feature) and more how Intersection Observer works. Whenever an element gets added to an Intersection Observer instance, it is immediately checked for intersection. In the context of `Scroller`, this means that if it is instantiated on load of a page and none of its elements are currently intersecting, `scene:exit` (and possibly `container:exit` if you provided one) are going to all fire as they fail that initial check. The good thing is this is _also_ true for the `*:enter` events, so nothing special is necessary for detecting if someone loads in the middle of your interactive. Make sure the code in your event listeners are prepared for this and have some way to determine whether anything in your `*:exit` listeners are needed yet!
@@ -164,7 +159,7 @@ require('intersection-observer');
 Before loading your scripts, you can include a link to [`polyfill.io`](https://polyfill.io/v3/). This service uses signals from the browser to determine what polyfills are needed and loads them in the environment. You can set flags on the URL to limit what `polyfill.io` attempts to load.
 
 ```html
-<script src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
 <script src="<your-code>"></script>
 ```
 
