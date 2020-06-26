@@ -40,11 +40,11 @@ You can also import it as a module via unpkg!
 
 ```html
 <script type="module">
-  import Scroller from 'https://unpkg.com/@newswire/scroller/dist/index.mjs';
+	import Scroller from 'https://unpkg.com/@newswire/scroller/dist/index.mjs';
 
-  const scroller = new Scroller({
-    scenes: document.querySelectorAll('.scene'),
-  });
+	const scroller = new Scroller({
+		scenes: document.querySelectorAll('.scene'),
+	});
 </script>
 ```
 
@@ -54,11 +54,11 @@ Assume for the following examples that our HTML is as follows:
 
 ```html
 <div class="container">
-  <div class="scene"></div>
-  <div class="scene"></div>
-  <div class="scene"></div>
-  <div class="scene"></div>
-  <div class="scene"></div>
+	<div class="scene"></div>
+	<div class="scene"></div>
+	<div class="scene"></div>
+	<div class="scene"></div>
+	<div class="scene"></div>
 </div>
 ```
 
@@ -69,23 +69,23 @@ import Scroller from '@newswire/scroller';
 
 // sets up the scroller instance, pass in an array of all the scenes
 const scroller = new Scroller({
-  scenes: document.querySelectorAll('.scene'),
+	scenes: document.querySelectorAll('.scene'),
 });
 
 // Scroller has a tiny event emitter embedded in it!
 
 // the `enter` event is triggered every time a scene crosses the threshold
-scroller.on('scene:enter', d => {
-  d.element.classList.add('active');
+scroller.on('scene:enter', (d) => {
+	d.element.classList.add('active');
 });
 
 // the `exit` event is triggered every time a scene exits the threshold
-scroller.on('scene:exit', d => {
-  d.element.classList.remove('active');
+scroller.on('scene:exit', (d) => {
+	d.element.classList.remove('active');
 });
 
 scroller.on('init', () => {
-  console.log('Everything is ready to go!');
+	console.log('Everything is ready to go!');
 });
 
 // starts up the IntersectionObserver
@@ -99,26 +99,26 @@ import Scroller from '@newswire/scroller';
 
 // sets up the scroller instance, pass in the container and an array of all the scenes
 const scroller = new Scroller({
-  container: document.querySelector('.container'),
-  scenes: document.querySelectorAll('.scene'),
+	container: document.querySelector('.container'),
+	scenes: document.querySelectorAll('.scene'),
 });
 
 // the `enter` event works as you expect with scenes...
-scroller.on('scene:enter', d => {
-  d.element.classList.add('active');
+scroller.on('scene:enter', (d) => {
+	d.element.classList.add('active');
 });
 
-scroller.on('scene:exit', d => {
-  d.element.classList.remove('active');
+scroller.on('scene:exit', (d) => {
+	d.element.classList.remove('active');
 });
 
 // ...but if a container is passed, events fire for it as well!
-scroller.on('container:enter', d => {
-  console.log("Let's go!");
+scroller.on('container:enter', (d) => {
+	console.log("Let's go!");
 });
 
-scroller.on('container:exit', d => {
-  console.log('We are done here.');
+scroller.on('container:exit', (d) => {
+	console.log('We are done here.');
 });
 
 scroller.init();
@@ -228,7 +228,7 @@ elements for scrollytelling.
 import Scroller from '@newswire/scroller';
 
 const scroller = new Scroller({
-  scenes: document.querySelectorAll('.scenes'),
+	scenes: document.querySelectorAll('.scenes'),
 });
 
 scroller.init();
@@ -294,7 +294,7 @@ any intersection events that occur.
 
 ```javascript
 const scroller = new Scroller({
-  scenes: document.querySelectorAll('.scenes'),
+	scenes: document.querySelectorAll('.scenes'),
 });
 
 scroller.init();
