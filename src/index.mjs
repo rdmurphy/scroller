@@ -23,202 +23,128 @@
  *
  * scroller.init();
  */
-class Scroller {
-  constructor({ container, offset = 0.5, scenes }) {
-    // public
-    this.observer = null;
+export default function Scroller(options) {
+  var observer, tracks=[], evts={};
+  var scenes = options.scenes,
+    container = options.container,
+    offset = options.offset,
+    prevOffset = 0;
 
-    // private
-    this.all_ = {};
-    this.container_ = container;
-    this.offset_ = offset;
-    this.previousOffset_ = 0;
-    this.scenes_ = scenes;
-  }
-
-  /**
-   * Adds a callback to the queue of a given event listener.
-   *
-   * @param {string} type Name of the event
-   * @param {Function} handler Callback function added to the listener
-   * @returns {void}
-   * @example
-   *
-   * const scroller = new Scroller({
-   *   scenes: document.querySelectorAll('.scenes')
-   * });
-   *
-   * const fn = (...) => {...};
-   *
-   * // adds callback to listener
-   * scroller.on('scene:enter', fn);
-   */
-  on(type, handler) {
-    (this.all_[type] || (this.all_[type] = [])).push(handler);
-  }
-
-  /**
-   * Removes a callback from the queue of a given event listener.
-   *
-   * @param {string} type Name of the event
-   * @param {Function} handler Callback function removed from the listener
-   * @returns {void}
-   * @example
-   *
-   * const scroller = new Scroller({
-   *   scenes: document.querySelectorAll('.scenes')
-   * });
-   *
-   * const fn = (...) => {...};
-   *
-   * // adds callback to listener
-   * scroller.on('scene:enter', fn);
-   *
-   * // removes callback from listener
-   * scroller.off('scene:enter', fn);
-   */
-  off(type, handler) {
-    if (this.all_[type]) {
-      this.all_[type].splice(this.all_[type].indexOf(handler) >>> 0, 1);
-    }
+  if (offset == null) {
+    offset = 0.5;
   }
 
   /**
    * Sends a payload to all callback functions listening for a given event.
    *
-   * @private
    * @param {string} type Name of the event
-   * @param {*} evt Data to be sent to each callback attached to the listener
+   * @param {*} [payload] Data to be sent to each callback attached to the listener
    * @returns {void}
    */
-  emit_(type, evt) {
-    (this.all_[type] || []).slice().map(handler => {
-      handler(evt);
-    });
+  function emit(type, payload) {
+    var i=0, arr=(evts[type] || []).slice();
+    for (; i < arr.length; i++) arr[i](payload);
   }
 
-  /**
-   * Initializes a Scroller's IntersectionObserver on a page and begins sending
-   * any intersection events that occur.
-   *
-   * @returns {void}
-   * @example
-   *
-   * const scroller = new Scroller({
-   *   scenes: document.querySelectorAll('.scenes')
-   * });
-   *
-   * scroller.init();
-   */
-  init() {
-    const observed = [];
-
-    this.observer = new IntersectionObserver(
-      entries => {
-        const isScrollingDown = this.getDirection_();
-
-        entries.forEach(entry => {
-          const element = entry.target;
-
-          const payload = {
-            bounds: entry.boundingClientRect,
-            element,
-            index: observed.indexOf(element),
-            isScrollingDown,
-          };
-
-          const prefix = element === this.container_ ? 'container' : 'scene';
-
-          if (entry.isIntersecting) {
-            /**
-             * Container enter event. Fires whenever the container begins intersecting.
-             *
-             * @event Scroller#container:enter
-             * @type {object}
-             * @property {DOMRectReadOnly} bounds The bounds of the active element
-             * @property {Element} element The element that intersected
-             * @property {number} index This is always -1 on the container
-             * @property {boolean} isScrollingDown Whether the user triggered this element
-             * while scrolling down or not
-             */
-            /**
-             * Scene enter event. Fires whenever a scene begins intersecting.
-             *
-             * @event Scroller#scene:enter
-             * @type {object}
-             * @property {DOMRectReadOnly} bounds The bounds of the active element
-             * @property {Element} element The element that intersected
-             * @property {number} index The index of the active element
-             * @property {boolean} isScrollingDown Whether the user triggered this element
-             * while scrolling down or not
-             */
-            this.emit_(`${prefix}:enter`, payload);
-          } else {
-            /**
-             * Container exit event. Fires whenever the container has exited.
-             *
-             * @event Scroller#container:exit
-             * @type {object}
-             * @property {DOMRectReadOnly} bounds The bounds of the exiting element
-             * @property {Element} element The element that exited
-             * @property {number} index This is always -1 on the container
-             * @property {boolean} isScrollingDown Whether the user triggering the exit
-             * while scrolling down or not
-             */
-            /**
-             * Scene enter event. Fires whenever a scene has exited.
-             *
-             * @event Scroller#scene:exit
-             * @type {object}
-             * @property {DOMRectReadOnly} bounds The bounds of the exiting element
-             * @property {Element} element The element that exited
-             * @property {number} index The index of the exiting element
-             * @property {boolean} isScrollingDown Whether the user triggering the exit
-             * while scrolling down or not
-             */
-            this.emit_(`${prefix}:exit`, payload);
-          }
-        });
-      },
-      {
-        rootMargin: `${-100 * (1 - this.offset_)}% 0px ${-100 * this.offset_}%`,
-      }
-    );
-
-    for (let i = 0; i < this.scenes_.length; i++) {
-      const item = this.scenes_[i];
-
-      observed.push(item);
-      this.observer.observe(item);
-    }
-
-    // a container is not required, but if provided we'll track it
-    if (this.container_) this.observer.observe(this.container_);
+  return {
+    /**
+     * Adds a callback to the queue of a given event listener.
+     *
+     * @param {string} type Name of the event
+     * @param {Function} handler Callback function added to the listener
+     * @returns {void}
+     * @example
+     *
+     * const scroller = new Scroller({
+     *   scenes: document.querySelectorAll('.scenes')
+     * });
+     *
+     * const fn = (...) => {...};
+     *
+     * // adds callback to listener
+     * scroller.on('scene:enter', fn);
+     */
+    on: function (type, handler) {
+      (evts[type] || (evts[type] = [])).push(handler);
+    },
 
     /**
-     * Init event. Fires once Scroller has finished setting up.
+     * Removes a callback from the queue of a given event listener.
      *
-     * @event Scroller#init
+     * @param {string} type Name of the event
+     * @param {Function} handler Callback function removed from the listener
+     * @returns {void}
+     * @example
+     *
+     * const scroller = new Scroller({
+     *   scenes: document.querySelectorAll('.scenes')
+     * });
+     *
+     * const fn = (...) => {...};
+     *
+     * // adds callback to listener
+     * scroller.on('scene:enter', fn);
+     *
+     * // removes callback from listener
+     * scroller.off('scene:enter', fn);
      */
-    this.emit_('init');
-  }
+    off: function (type, handler) {
+      var arr = evts[type] || [];
+      if (arr.length) arr.splice(arr.indexOf(handler) >>> 0, 1);
+    },
 
-  /**
-   * Determines whether the page was scrolling up or down when an intersection
-   * event is triggered. Keeps track of direction via storage of the previous
-   * pageYOffset.
-   *
-   * @private
-   * @returns {boolean} If true, the page was scrolling down
-   */
-  getDirection_() {
-    const currentOffset = window.pageYOffset;
+    /**
+     * Initializes a Scroller's IntersectionObserver on a page and begins sending
+     * any intersection events that occur.
+     *
+     * @returns {void}
+     * @example
+     *
+     * const scroller = new Scroller({
+     *   scenes: document.querySelectorAll('.scenes')
+     * });
+     *
+     * scroller.init();
+     */
+    init: function () {
+      var i=0, elem, entry, isDown;
+      var tmp = (-100 * (1 - offset) + '% 0px ' + (-100 * offset) + '%');
 
-    const isScrollingDown = currentOffset > this.previousOffset_;
-    this.previousOffset_ = currentOffset;
+      observer = new IntersectionObserver(
+        function (entries) {
+          offset = window.pageYOffset;
+          isDown = offset > prevOffset;
+          prevOffset = offset;
 
-    return isScrollingDown;
-  }
+          for (i=0; i < entries.length; i++) {
+            entry = entries[i];
+            elem = entry.target;
+
+            tmp = elem === container ? 'container:' : 'scene:';
+            tmp += entry.isIntersecting ? 'enter' : 'exit';
+
+            emit(tmp, {
+              bounds: entry.boundingClientRect,
+              index: tracks.indexOf(elem),
+              isScrollingDown: isDown,
+              element: elem,
+            });
+          }
+        }, {
+          rootMargin: tmp
+        }
+      );
+
+      for (i=0; i < scenes.length; i++) {
+        tracks.push(elem = scenes[i]);
+        observer.observe(elem);
+      }
+
+      // a container is not required, but if provided we'll track it
+      if (container) observer.observe(container);
+
+      // scroller is ready
+      emit('init');
+    }
+  };
 }
-
-export default Scroller;
