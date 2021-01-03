@@ -1,13 +1,14 @@
 {
-  "name": "@newswire/scroller",
   "version": "0.1.0",
+  "umd:name": "Scroller",
+  "name": "@newswire/scroller",
   "description": "The tiniest scrollyteller around.",
-  "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
   "unpkg": "dist/index.umd.js",
   "module": "dist/index.mjs",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "microbundle src/index.mjs -f cjs,es,umd --target web --name Scroller && npm run build:copy",
+    "build": "bundt src/index.mjs",
     "build:copy": "cp dist/index.umd.* docs/",
     "build:watch": "microbundle watch src/index.mjs -f cjs,es,umd --target web --name Scroller",
     "bundlesize": "bundlesize",
@@ -32,13 +33,12 @@
     "url": "https://github.com/rdmurphy/scroller/issues"
   },
   "homepage": "https://github.com/rdmurphy/scroller#readme",
-  "dependencies": {},
   "devDependencies": {
     "@zeit/git-hooks": "^0.1.4",
     "agadoo": "^2.0.0",
     "bundlesize": "^0.18.0",
+    "bundt": "^1.1.2",
     "documentation": "^13.0.0",
-    "microbundle": "^0.13.0",
     "precise-commits": "^1.0.2",
     "prettier": "^1.17.1"
   },
