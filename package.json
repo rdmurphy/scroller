@@ -56,7 +56,11 @@
       "maxSize": "600B"
     }
   ],
-  "mangle": {
-    "regex": "_$"
+  "terser": {
+    "mangle": {
+      "properties": {
+        "regex": "_$"
+      }
+    }
   }
 }
