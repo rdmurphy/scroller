@@ -9,10 +9,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "bundt src/index.mjs --minify",
-    "postbuild": "cp dist/index.umd.* docs/",
-    "bundlesize": "bundlesize",
+    "postbuild": "cp dist/index.umd.js docs/",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
-    "prerelease": "npm run build && npm run bundlesize && agadoo",
+    "prerelease": "npm run build && agadoo",
     "release": "git commit -am \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "repository": {
@@ -35,7 +34,6 @@
   "devDependencies": {
     "@zeit/git-hooks": "^0.1.4",
     "agadoo": "^2.0.0",
-    "bundlesize": "^0.18.0",
     "bundt": "^1.1.2",
     "documentation": "^13.0.0",
     "precise-commits": "^1.0.2",
@@ -49,12 +47,6 @@
     "tabWidth": 2,
     "trailingComma": "es5"
   },
-  "bundlesize": [
-    {
-      "path": "./dist/*.{js,mjs}",
-      "maxSize": "600B"
-    }
-  ],
   "terser": {
     "mangle": {
       "properties": {
