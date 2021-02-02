@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Moved to `bundt` from `microbundle` to greatly cut out the complexity of preparing this library.
+
 ## [0.1.0] - 2019-01-18
 
 ### Added

@@ -124,11 +124,9 @@ scroller.on('container:exit', d => {
 scroller.init();
 ```
 
-## Known quirks
+## Intersection Observer's pre-check
 
-### Intersection Observer pre-check
-
-This is less a quirk (and in some ways a feature) and more how Intersection Observer works. Whenever an element gets added to an Intersection Observer instance, it is immediately checked for intersection. In the context of `Scroller`, this means that if it is instantiated on load of a page and none of its elements are currently intersecting, `scene:exit` (and possibly `container:exit` if you provided one) are going to all fire as they fail that initial check. The good thing is this is _also_ true for the `*:enter` events, so nothing special is necessary for detecting if someone loads in the middle of your interactive. Make sure the code in your event listeners are prepared for this and have some way to determine whether anything in your `*:exit` listeners are needed yet!
+This is a minor quirk of Intersection Observer to keep in mind. Whenever an element gets added to an Intersection Observer instance it is immediately checked for intersection. In the context of `Scroller`, this means that if it is instantiated on load of a page and none of its elements are currently intersecting, `scene:exit` (and possibly `container:exit`) is going to fire for each element as they fail that initial check. The good thing is this is _also_ true for the `*:enter` events, so nothing special is necessary for detecting if someone loads in the middle of your interactive. Make sure the code in your event listeners are prepared for this and have some way to determine whether anything in your `*:exit` listeners are needed yet!
 
 ## Intersection Observer polyfill?
 
@@ -159,16 +157,20 @@ require('intersection-observer');
 Before loading your scripts, you can include a link to [`polyfill.io`](https://polyfill.io/v3/). This service uses signals from the browser to determine what polyfills are needed and loads them in the environment. You can set flags on the URL to limit what `polyfill.io` attempts to load.
 
 ```html
-<script src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
+<!-- "nomodule" is used to prevent this from loading in modern browers, which almost certainly
+support IntersectionObserver -->
+<script nomodule src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"></script>
 <script src="<your-code>"></script>
 ```
 
 ### Load it with [`unpkg.com`](https://unpkg.com)
 
-This is similar to the `polyfill.io` method, but without a service in-between determining whether it is necessary. (Every browser will get the code! But it still checks if the browser supports `IntersectionObserver` before activating.)
+This is similar to the `polyfill.io` method, but without a service in-between determining whether it is necessary.
 
 ```html
-<script src="https://unpkg.com/intersection-observer/intersection-observer"></script>
+<!-- "nomodule" is used to prevent this from loading in modern browers, which almost certainly
+support IntersectionObserver -->
+<script nomodule src="https://unpkg.com/intersection-observer/intersection-observer"></script>
 <script src="<your-code>"></script>
 ```
 
