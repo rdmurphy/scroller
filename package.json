@@ -39,7 +39,7 @@
     "bundt": "^1.1.2",
     "documentation": "^13.0.0",
     "precise-commits": "^1.0.2",
-    "prettier": "^1.17.1"
+    "prettier": "^2.2.1"
   },
   "prettier": {
     "bracketSpacing": true,
