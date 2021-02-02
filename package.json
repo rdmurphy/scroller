@@ -9,7 +9,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "bundt src/index.mjs --minify",
-    "build:copy": "cp dist/index.umd.* docs/",
+    "postbuild": "cp dist/index.umd.* docs/",
     "bundlesize": "bundlesize",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
     "prerelease": "npm run build && npm run bundlesize && agadoo",
