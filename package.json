@@ -8,7 +8,7 @@
   "module": "dist/index.mjs",
   "main": "dist/index.js",
   "scripts": {
-    "build": "bundt src/index.mjs",
+    "build": "bundt src/index.mjs --minify",
     "postbuild": "cp dist/index.umd.* docs/",
     "bundlesize": "bundlesize",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
