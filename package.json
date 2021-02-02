@@ -9,8 +9,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "bundt src/index.mjs",
-    "build:copy": "cp dist/index.umd.* docs/",
-    "build:watch": "microbundle watch src/index.mjs -f cjs,es,umd --target web --name Scroller",
+    "postbuild": "cp dist/index.umd.* docs/",
     "bundlesize": "bundlesize",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
     "prerelease": "npm run build && npm run bundlesize && agadoo",
