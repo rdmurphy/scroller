@@ -9,6 +9,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "bundt src/index.mjs --minify",
+    "git-pre-commit": "precise-commits",
     "postbuild": "cp dist/index.umd.js docs/",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
     "prerelease": "npm run build && agadoo",
@@ -31,7 +32,9 @@
     "url": "https://github.com/rdmurphy/scroller/issues"
   },
   "homepage": "https://github.com/rdmurphy/scroller#readme",
+  "dependencies": {},
   "devDependencies": {
+    "@rdm/prettier-config": "^1.0.1",
     "@zeit/git-hooks": "^0.1.4",
     "agadoo": "^2.0.0",
     "bundt": "^1.1.2",
@@ -39,14 +42,7 @@
     "precise-commits": "^1.0.2",
     "prettier": "^2.2.1"
   },
-  "prettier": {
-    "bracketSpacing": true,
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5"
-  },
+  "prettier": "@rdm/prettier-config",
   "terser": {
     "mangle": {
       "properties": {
