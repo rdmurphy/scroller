@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>@newswire/scroll basic</title>
+    <title>@newswire/scroll progress</title>
     <style>
       html {
         box-sizing: border-box;
@@ -108,12 +108,12 @@
     <div class="midpoint"></div>
 
     <script type="module">
-      import { Scroller } from './index.mjs';
+      import { Progress } from './index.mjs';
 
       function getRandomIntInclusive(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
+        return Math.floor(Math.random() * (max - min + 1)) + min; // The maximum is inclusive and the minimum is inclusive
       }
 
       var scenes = document.querySelectorAll('.scene');
@@ -127,29 +127,17 @@
 
       document.querySelector('.midpoint').style.top = (1 - offset) * 100 + '%';
 
-      const scroller = new Scroller({
-        container: document.querySelector('.scroller-container'),
+      const progress = new Progress({ 
         scenes: scenes,
         offset: offset,
+      })
+
+      progress.on('scene:progress', function(d) {
+        d.element.textContent = (d.progress * 100).toFixed(2) + '%';
       });
 
-      scroller.on('scene:enter', function(d) {
-        d.element.classList.add('is-active');
-      });
 
-      scroller.on('container:enter', function(d) {
-        console.log('enter:', d);
-      });
-
-      scroller.on('scene:exit', function(d) {
-        d.element.classList.remove('is-active');
-      });
-
-      scroller.on('container:exit', function(d) {
-        console.log('exit:', d);
-      });
-
-      scroller.init();
+      progress.init();
     </script>
   </body>
 </html>

@@ -171,10 +171,9 @@
 
     <div class="midpoint"></div>
 
-    <script src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
-    <script src="https://unpkg.com/stickyfilljs@2.1.0/dist/stickyfill.min.js"></script>
-    <script src="index.umd.js"></script>
-    <script>
+    <script type="module">
+      import { Scroller } from './index.mjs';
+
       function getRandomIntInclusive(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
