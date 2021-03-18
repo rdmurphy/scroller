@@ -95,25 +95,25 @@
       </p>
     </div>
     <div class="scroller-container">
-      <div class="scene">Scene 1</div>
-      <div class="scene">Scene 2</div>
-      <div class="scene">Scene 3</div>
-      <div class="scene">Scene 4</div>
-      <div class="scene">Scene 5</div>
-      <div class="scene">Scene 6</div>
-      <div class="scene">Scene 7</div>
-      <div class="scene">Scene 8</div>
+      <div class="scene">0%</div>
+      <div class="scene">0%</div>
+      <div class="scene">0%</div>
+      <div class="scene">0%</div>
+      <div class="scene">0%</div>
+      <div class="scene">0%</div>
+      <div class="scene">0%</div>
+      <div class="scene">0%</div>
     </div>
 
     <div class="midpoint"></div>
 
     <script type="module">
-      import { Progress } from './index.mjs';
+      import { Scroller } from './index.mjs';
 
       function getRandomIntInclusive(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min; // The maximum is inclusive and the minimum is inclusive
+        return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
       }
 
       var scenes = document.querySelectorAll('.scene');
@@ -127,17 +127,34 @@
 
       document.querySelector('.midpoint').style.top = (1 - offset) * 100 + '%';
 
-      const progress = new Progress({ 
+      const scroller = new Scroller({
+        container: document.querySelector('.scroller-container'),
         scenes: scenes,
         offset: offset,
-      })
-
-      progress.on('scene:progress', function(d) {
-        d.element.textContent = (d.progress * 100).toFixed(2) + '%';
       });
 
+      scroller.on('scene:enter', function(d) {
+        d.element.classList.add('is-active');
+      });
 
-      progress.init();
+      scroller.on('container:enter', function(d) {
+        console.log('enter:', d);
+      });
+
+      scroller.on('scene:exit', function(d) {
+        d.element.classList.remove('is-active');
+      });
+
+      scroller.on('container:exit', function(d) {
+        console.log('exit:', d);
+      });
+
+      scroller.on('scene:progress', function(d) {
+        console.log('scene:progress', d);
+        d.element.textContent = (d.progress * 100).toFixed(2) + '%';
+      })
+
+      scroller.init();
     </script>
   </body>
 </html>

@@ -6,13 +6,13 @@
  * @param {Element} [options.container] Optionally pass in what should be
  * considered the containing element of all the scenes - this gets added to the
  * Intersection Observer instance and additionally fires its own events
- * @param {number} [options.offset=0.5] How far from the top/bottom of the viewable
+ * @param {Number} [options.offset] How far from the top/bottom of the viewable
  * area to trigger enters/exits of scenes, represented as a value between
  * 0 and 1
- * @param {boolean} [options.progress] If true, activates scroll depth observers and sends
- * progress events on intersection
- * @param {ArrayLike<Element>} options.scenes A collection of all the elements to be
+ * @param {Element[]} options.scenes An array of all the Elements to be
  * considered scenes of this Scroller
+ * @property {IntersectionObserver|null} observer Once initialized, a reference
+ * to the Scroller's instance of IntersectionObserver
  * @example
  *
  * import Scroller from '@newswire/scroller';
@@ -23,16 +23,14 @@
  *
  * scroller.init();
  */
-export function Scroller(options) {
-	/** @type {Element[]} */
-	var tracks = [];
-	/** @type {Record<string, Array<(arg: any) => void>>} */
-	var evts = {};
-	var scenes = options.scenes;
-	var container = options.container;
-	var offset = options.offset;
-	var progress = options.progress;
-	var prevOffset = 0;
+export default function Scroller(options) {
+	var observer,
+		tracks = [],
+		evts = {};
+	var scenes = options.scenes,
+		container = options.container,
+		offset = options.offset,
+		prevOffset = 0;
 
 	if (offset == null) {
 		offset = 0.5;
@@ -51,51 +49,12 @@ export function Scroller(options) {
 		for (; i < arr.length; i++) arr[i](payload);
 	}
 
-	/**
-	 *
-	 * @param {Element} element the element who's progress to watch
-	 * @param {DOMRectReadOnly | undefined} initBounds the initial bounds from the IntersectionObserver
-	 * @param {(arg: any) => void} cb
-	 */
-	function observeProgress(element, initBounds, cb) {
-		/**
-		 * Called on each scroll event.
-		 */
-		function scroll() {
-			var bounds = initBounds || element.getBoundingClientRect();
-			var top = bounds.top;
-			var bottom = bounds.bottom;
-			var progress =
-				(window.innerHeight * /** @type {number} */ (offset) - top) /
-				(bottom - top);
-
-			cb({
-				bounds: bounds,
-				element: element,
-				progress: Math.max(0, Math.min(progress, 1)),
-			});
-		}
-
-		// initial hit
-		scroll();
-		initBounds = undefined;
-
-		return {
-			subscribe: function () {
-				window.addEventListener('scroll', scroll, false);
-			},
-			unsubscribe: function () {
-				window.removeEventListener('scroll', scroll, false);
-			},
-		};
-	}
-
 	return {
 		/**
 		 * Adds a callback to the queue of a given event listener.
 		 *
 		 * @param {string} type Name of the event
-		 * @param {(param: any) => void} handler Callback function added to the listener
+		 * @param {Function} handler Callback function added to the listener
 		 * @returns {void}
 		 * @example
 		 *
@@ -116,7 +75,7 @@ export function Scroller(options) {
 		 * Removes a callback from the queue of a given event listener.
 		 *
 		 * @param {string} type Name of the event
-		 * @param {(param: any) => void} handler Callback function removed from the listener
+		 * @param {Function} handler Callback function removed from the listener
 		 * @returns {void}
 		 * @example
 		 *
@@ -151,44 +110,24 @@ export function Scroller(options) {
 		 * scroller.init();
 		 */
 		init: function () {
-			var i, elem, entry, isDown;
-			var tmp =
-				-100 * (1 - /** @type {number} */ (offset)) +
-				'% 0px ' +
-				-100 * /** @type {number} */ (offset) +
-				'%';
-			var mapping = new Map();
+			var i = 0,
+				elem,
+				entry,
+				isDown;
+			var tmp = -100 * (1 - offset) + '% 0px ' + -100 * offset + '%';
 
-			entry = new IntersectionObserver(
+			observer = new IntersectionObserver(
 				function (entries) {
-					i = window.pageYOffset;
-					isDown = i > prevOffset;
-					prevOffset = i;
+					offset = window.pageYOffset;
+					isDown = offset > prevOffset;
+					prevOffset = offset;
 
 					for (i = 0; i < entries.length; i++) {
 						entry = entries[i];
 						elem = entry.target;
 
 						tmp = elem === container ? 'container:' : 'scene:';
-
-						if (!mapping.has(elem)) {
-							mapping.set(
-								elem,
-								observeProgress(
-									elem,
-									entry.boundingClientRect,
-									emit.bind(null, tmp + 'progress'),
-								),
-							);
-						}
-
-						if (entry.isIntersecting) {
-							mapping.get(elem).subscribe();
-							tmp += 'enter';
-						} else {
-							mapping.get(elem).unsubscribe();
-							tmp += 'exit';
-						}
+						tmp += entry.isIntersecting ? 'enter' : 'exit';
 
 						emit(tmp, {
 							bounds: entry.boundingClientRect,
@@ -205,11 +144,11 @@ export function Scroller(options) {
 
 			for (i = 0; i < scenes.length; i++) {
 				tracks.push((elem = scenes[i]));
-				entry.observe(elem);
+				observer.observe(elem);
 			}
 
 			// a container is not required, but if provided we'll track it
-			if (container) entry.observe(container);
+			if (container) observer.observe(container);
 
 			// scroller is ready
 			emit('init');

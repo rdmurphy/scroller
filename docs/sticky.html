@@ -191,9 +191,8 @@
 
       document.querySelector('.midpoint').style.top = (1 - offset) * 100 + '%';
 
-      var scroller = new Scroller({
+      var scroller = new Scroller(scenes, {
         container: document.querySelector('.scroller-container'),
-        scenes: scenes,
         offset: offset,
       });
 

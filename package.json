@@ -8,7 +8,7 @@
   "module": "dist/index.mjs",
   "main": "dist/index.js",
   "scripts": {
-    "build": "bundt src/index.js --minify",
+    "build": "bundt src/other.js --minify",
     "git-pre-commit": "precise-commits",
     "postbuild": "cp dist/index.mjs docs/",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",

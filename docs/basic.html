@@ -127,26 +127,16 @@
 
       document.querySelector('.midpoint').style.top = (1 - offset) * 100 + '%';
 
-      const scroller = new Scroller({
-        container: document.querySelector('.scroller-container'),
-        scenes: scenes,
+      const scroller = new Scroller(scenes, {
         offset: offset,
       });
 
-      scroller.on('scene:enter', function(d) {
+      scroller.on('enter', function(d) {
         d.element.classList.add('is-active');
       });
 
-      scroller.on('container:enter', function(d) {
-        console.log('enter:', d);
-      });
-
-      scroller.on('scene:exit', function(d) {
+      scroller.on('exit', function(d) {
         d.element.classList.remove('is-active');
-      });
-
-      scroller.on('container:exit', function(d) {
-        console.log('exit:', d);
       });
 
       scroller.init();
