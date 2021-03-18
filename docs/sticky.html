@@ -172,7 +172,7 @@
     <div class="midpoint"></div>
 
     <script type="module">
-      import { Scroller } from './index.mjs';
+      import Scroller from './index.mjs';
 
       function getRandomIntInclusive(min, max) {
         min = Math.ceil(min);
@@ -192,33 +192,21 @@
       document.querySelector('.midpoint').style.top = (1 - offset) * 100 + '%';
 
       var scroller = new Scroller(scenes, {
-        container: document.querySelector('.scroller-container'),
         offset: offset,
       });
 
       var graphic = document.querySelector('.graphic');
 
-      scroller.on('scene:enter', function(d) {
+      scroller.on('enter', function(d) {
         d.element.classList.add('is-active');
         graphic.textContent = 'Scene Graphic ' + (d.index + 1);
       });
 
-      scroller.on('container:enter', function(d) {
-        console.log('enter:', d);
-      });
-
-      scroller.on('scene:exit', function(d) {
+      scroller.on('exit', function(d) {
         d.element.classList.remove('is-active');
       });
 
-      scroller.on('container:exit', function(d) {
-        console.log('exit:', d);
-        graphic.textContent = 'Waiting to be activated';
-      });
-
       scroller.init();
-
-      Stickyfill.add(document.querySelectorAll('.sticky-top'));
     </script>
   </body>
 </html>

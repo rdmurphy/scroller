@@ -10,7 +10,7 @@
  * @param {ArrayLike<Element>} scenes
  * @param {ScrollerOptions} options
  */
-export function Scroller(scenes, options) {
+export default function Scroller(scenes, options) {
 	/** @type {Map<string, Set<Handler>>} */
 	var events = new Map();
 	var offset = options.offset;
@@ -58,12 +58,7 @@ export function Scroller(scenes, options) {
 		},
 
 		init: function () {
-			var i, elem, entry, isDown;
-			var tmp =
-				-100 * (1 - /** @type {number} */ (offset)) +
-				'% 0px ' +
-				-100 * /** @type {number} */ (offset) +
-				'%';
+			var i, isDown, entry, element;
 
 			entry = new IntersectionObserver(
 				function (entries) {
@@ -73,21 +68,27 @@ export function Scroller(scenes, options) {
 
 					for (i = 0; i < entries.length; i++) {
 						entry = entries[i];
-						elem = entry.target;
+						element = entry.target;
 
 						emit(entry.isIntersecting ? 'enter' : 'exit', {
 							bounds: entry.boundingClientRect,
 							// @ts-ignore
-							index: [].indexOf.call(scenes, elem),
+							index: entries.indexOf.call(scenes, element),
 							isScrollingDown: isDown,
-							element: elem,
+							element: element,
 						});
 					}
 				},
-				{ rootMargin: tmp },
+				{
+					rootMargin:
+						-100 * (1 - /** @type {number} */ (offset)) +
+						'% 0px ' +
+						-100 * /** @type {number} */ (offset) +
+						'%',
+				},
 			);
 
-			for (let i = 0; i < scenes.length; i++) {
+			for (i = 0; i < scenes.length; i++) {
 				entry.observe(scenes[i]);
 			}
 

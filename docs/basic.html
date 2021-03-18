@@ -57,6 +57,7 @@
         display: flex;
         font-size: 1.25rem;
         justify-content: center;
+        margin-bottom: 40px;
         width: 100%;
       }
 
@@ -108,7 +109,7 @@
     <div class="midpoint"></div>
 
     <script type="module">
-      import { Scroller } from './index.mjs';
+      import Scroller from './index.mjs';
 
       function getRandomIntInclusive(min, max) {
         min = Math.ceil(min);
@@ -132,6 +133,7 @@
       });
 
       scroller.on('enter', function(d) {
+        console.log(d)
         d.element.classList.add('is-active');
       });
 
