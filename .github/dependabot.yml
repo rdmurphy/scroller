@@ -1,0 +1,17 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "13:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: documentation
+    versions:
+    - 13.2.0
+    - 13.2.3
+    - 13.2.4
+  - dependency-name: prettier
+    versions:
+    - 2.2.1
