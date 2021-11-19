@@ -1,5 +1,6 @@
 {
   "version": "0.1.0",
+  "type": "module",
   "umd:name": "Scroller",
   "name": "@newswire/scroller",
   "description": "The tiniest scrollyteller around.",
@@ -13,7 +14,9 @@
     "postbuild": "cp dist/index.mjs docs/",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
     "prerelease": "npm run build && agadoo",
-    "release": "git commit -am \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "release": "git commit -am \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "start": "sirv . --dev --port 3000",
+    "test": "playwright test"
   },
   "repository": {
     "type": "git",
@@ -33,13 +36,15 @@
   },
   "homepage": "https://github.com/rdmurphy/scroller#readme",
   "devDependencies": {
+    "@playwright/test": "^1.17.0-rc1",
     "@rdm/prettier-config": "^2.0.0",
     "@zeit/git-hooks": "^0.1.4",
     "agadoo": "^2.0.0",
     "bundt": "^1.1.5",
     "documentation": "^13.0.0",
     "precise-commits": "^1.0.2",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "sirv-cli": "^1.0.14"
   },
   "prettier": "@rdm/prettier-config",
   "terser": {
