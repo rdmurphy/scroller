@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@newswire/scroller</title>
+  <style>
+    .container {
+      margin-bottom: 100vh;
+      margin-top: 100vh;
+    }
+
+    .scene {
+      background-color: lightyellow;
+      display: grid;
+      height: 30vh;
+      place-items: center;
+      width: 100%;
+    }
+
+    .scene.active {
+      background-color: paleturquoise;
+    }
+
+    .scene + .scene {
+      margin-top: 30vh;
+    }
+  </style>
+  <script type="module">
+    import Scroller from '/src/index.js';
+
+    const scroller = new Scroller(document.querySelectorAll('.scene'), {
+      offset: 0.5,
+    });
+    window.scroller = scroller;
+
+    scroller.on('exit', (d) => {
+      d.element.classList.remove('active');
+    });
+
+    scroller.init();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="scene">1</div>
+    <div class="scene">2</div>
+    <div class="scene">3</div>
+  </div>
+</body>
+</html>
