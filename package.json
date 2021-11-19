@@ -8,8 +8,9 @@
   "unpkg": "dist/index.umd.js",
   "module": "dist/index.mjs",
   "main": "dist/index.js",
+  "types": "src/index.d.ts",
   "scripts": {
-    "build": "bundt src/other.js --minify",
+    "build": "bundt src/index.js --minify",
     "git-pre-commit": "precise-commits",
     "postbuild": "cp dist/index.mjs docs/",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",

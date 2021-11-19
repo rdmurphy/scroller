@@ -1,37 +1,18 @@
 /**
- * Uses Intersection Observer to monitor the page location of a series of
- * elements for scrollytelling.
- *
- * @param {object} options
- * @param {Element} [options.container] Optionally pass in what should be
- * considered the containing element of all the scenes - this gets added to the
- * Intersection Observer instance and additionally fires its own events
- * @param {number} [options.offset=0.5] How far from the top/bottom of the viewable
- * area to trigger enters/exits of scenes, represented as a value between
- * 0 and 1
- * @param {boolean} [options.progress] If true, activates scroll depth observers and sends
- * progress events on intersection
- * @param {ArrayLike<Element>} options.scenes A collection of all the elements to be
- * considered scenes of this Scroller
- * @example
- *
- * import Scroller from '@newswire/scroller';
- *
- * const scroller = new Scroller({
- *   scenes: document.querySelectorAll('.scenes')
- * });
- *
- * scroller.init();
+ * @template {Element} T
+ * @typedef {import('../index').Handler<T>} Handler
  */
-export function Scroller(options) {
-	/** @type {Element[]} */
-	var tracks = [];
-	/** @type {Record<string, Array<(arg: any) => void>>} */
-	var evts = {};
-	var scenes = options.scenes;
-	var container = options.container;
+
+/**
+ *
+ * @template {Element} T
+ * @param {ArrayLike<T>} scenes
+ * @param {import('../index').Options} options
+ */
+export default function Scroller(scenes, options) {
+	/** @type {Map<string, Set<Handler<T>>>} */
+	var events = new Map();
 	var offset = options.offset;
-	var progress = options.progress;
 	var prevOffset = 0;
 
 	if (offset == null) {
@@ -39,125 +20,44 @@ export function Scroller(options) {
 	}
 
 	/**
-	 * Sends a payload to all callback functions listening for a given event.
 	 *
-	 * @param {string} type Name of the event
-	 * @param {*} [payload] Data to be sent to each callback attached to the listener
-	 * @returns {void}
+	 * @param {string} type name of the event
+	 * @param {any} [event] The data to send to listeners of the event
 	 */
-	function emit(type, payload) {
-		var i = 0,
-			arr = (evts[type] || []).slice();
-		for (; i < arr.length; i++) arr[i](payload);
-	}
+	function emit(type, event) {
+		var handlers = events.get(type);
 
-	/**
-	 *
-	 * @param {Element} element the element who's progress to watch
-	 * @param {DOMRectReadOnly | undefined} initBounds the initial bounds from the IntersectionObserver
-	 * @param {(arg: any) => void} cb
-	 */
-	function observeProgress(element, initBounds, cb) {
-		/**
-		 * Called on each scroll event.
-		 */
-		function scroll() {
-			var bounds = initBounds || element.getBoundingClientRect();
-			var top = bounds.top;
-			var bottom = bounds.bottom;
-			var progress =
-				(window.innerHeight * /** @type {number} */ (offset) - top) /
-				(bottom - top);
-
-			cb({
-				bounds: bounds,
-				element: element,
-				progress: Math.max(0, Math.min(progress, 1)),
+		if (handlers) {
+			handlers.forEach(function eachHandler(handler) {
+				handler(event);
 			});
 		}
-
-		// initial hit
-		scroll();
-		initBounds = undefined;
-
-		return {
-			subscribe: function () {
-				window.addEventListener('scroll', scroll, false);
-			},
-			unsubscribe: function () {
-				window.removeEventListener('scroll', scroll, false);
-			},
-		};
 	}
 
 	return {
 		/**
-		 * Adds a callback to the queue of a given event listener.
-		 *
-		 * @param {string} type Name of the event
-		 * @param {(param: any) => void} handler Callback function added to the listener
-		 * @returns {void}
-		 * @example
-		 *
-		 * const scroller = new Scroller({
-		 *   scenes: document.querySelectorAll('.scenes')
-		 * });
-		 *
-		 * const fn = (...) => {...};
-		 *
-		 * // adds callback to listener
-		 * scroller.on('scene:enter', fn);
+		 * @template {Element} T
+		 * @param {string} type name of the event
+		 * @param {Handler<T>} handler callback function to run on emit
 		 */
 		on: function (type, handler) {
-			(evts[type] || (evts[type] = [])).push(handler);
+			var handlers = events.get(type);
+			var added = handlers && handlers.add(handler);
+
+			if (!added) {
+				events.set(type, new Set().add(handler));
+			}
+
+			return function off() {
+				handlers = events.get(type);
+				if (handlers) {
+					handlers.delete(handler);
+				}
+			};
 		},
 
-		/**
-		 * Removes a callback from the queue of a given event listener.
-		 *
-		 * @param {string} type Name of the event
-		 * @param {(param: any) => void} handler Callback function removed from the listener
-		 * @returns {void}
-		 * @example
-		 *
-		 * const scroller = new Scroller({
-		 *   scenes: document.querySelectorAll('.scenes')
-		 * });
-		 *
-		 * const fn = (...) => {...};
-		 *
-		 * // adds callback to listener
-		 * scroller.on('scene:enter', fn);
-		 *
-		 * // removes callback from listener
-		 * scroller.off('scene:enter', fn);
-		 */
-		off: function (type, handler) {
-			var arr = evts[type] || [];
-			if (arr.length) arr.splice(arr.indexOf(handler) >>> 0, 1);
-		},
-
-		/**
-		 * Initializes a Scroller's IntersectionObserver on a page and begins sending
-		 * any intersection events that occur.
-		 *
-		 * @returns {void}
-		 * @example
-		 *
-		 * const scroller = new Scroller({
-		 *   scenes: document.querySelectorAll('.scenes')
-		 * });
-		 *
-		 * scroller.init();
-		 */
 		init: function () {
-			var i, elem, entry, isDown;
-			var tmp =
-				-100 * (1 - /** @type {number} */ (offset)) +
-				'% 0px ' +
-				-100 * /** @type {number} */ (offset) +
-				'%';
-			var mapping = new Map();
+			var i, isDown, entry, element;
 
 			entry = new IntersectionObserver(
 				function (entries) {
@@ -167,51 +67,26 @@ export function Scroller(options) {
 
 					for (i = 0; i < entries.length; i++) {
 						entry = entries[i];
-						elem = entry.target;
+						element = entry.target;
 
-						tmp = elem === container ? 'container:' : 'scene:';
-
-						if (!mapping.has(elem)) {
-							mapping.set(
-								elem,
-								observeProgress(
-									elem,
-									entry.boundingClientRect,
-									emit.bind(null, tmp + 'progress'),
-								),
-							);
-						}
-
-						if (entry.isIntersecting) {
-							mapping.get(elem).subscribe();
-							tmp += 'enter';
-						} else {
-							mapping.get(elem).unsubscribe();
-							tmp += 'exit';
-						}
-
-						emit(tmp, {
+						emit(entry.isIntersecting ? 'enter' : 'exit', {
 							bounds: entry.boundingClientRect,
-							index: tracks.indexOf(elem),
+							// @ts-ignore
+							index: entries.indexOf.call(scenes, element),
 							isScrollingDown: isDown,
-							element: elem,
+							element: element,
 						});
 					}
 				},
 				{
-					rootMargin: tmp,
+					rootMargin: -100 * (1 - offset) + '% 0px ' + -100 * offset + '%',
 				},
 			);
 
 			for (i = 0; i < scenes.length; i++) {
-				tracks.push((elem = scenes[i]));
-				entry.observe(elem);
+				entry.observe(scenes[i]);
 			}
 
-			// a container is not required, but if provided we'll track it
-			if (container) entry.observe(container);
-
-			// scroller is ready
 			emit('init');
 		},
 	};
