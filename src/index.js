@@ -7,12 +7,12 @@
  *
  * @template {Element} T
  * @param {ArrayLike<T>} scenes
- * @param {import('../index').Options} options
+ * @param {import('../index').Options} [options]
  */
 export default function Scroller(scenes, options) {
 	/** @type {Map<string, Set<Handler<T>>>} */
 	var events = new Map();
-	var offset = options.offset;
+	var offset = options && options.offset;
 	var prevOffset = 0;
 
 	if (offset == null) {
@@ -41,14 +41,12 @@ export default function Scroller(scenes, options) {
 		 * @param {Handler<T>} handler callback function to run on emit
 		 */
 		on: function (type, handler) {
-			var handlers = events.get(type);
-			var added = handlers && handlers.add(handler);
-
-			if (!added) {
-				events.set(type, new Set().add(handler));
-			}
+			var handlers = events.get(type) || new Set();
+			handlers.add(handler);
+			events.set(type, handlers);
 
 			return function off() {
+				// @ts-ignore
 				handlers = events.get(type);
 				if (handlers) {
 					handlers.delete(handler);
@@ -79,7 +77,11 @@ export default function Scroller(scenes, options) {
 					}
 				},
 				{
-					rootMargin: -100 * (1 - offset) + '% 0px ' + -100 * offset + '%',
+					rootMargin:
+						-100 * (1 - /** @type {number} */ (offset)) +
+						'% 0px ' +
+						-100 * /** @type {number} */ (offset) +
+						'%',
 				},
 			);
 

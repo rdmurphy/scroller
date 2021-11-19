@@ -5,7 +5,7 @@ export interface Options {
 
 	@default 0.5
 	*/
-	readonly offset: number;
+	readonly offset?: number;
 }
 
 export interface Entry<T extends Element> {
