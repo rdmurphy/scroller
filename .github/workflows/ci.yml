@@ -22,10 +22,15 @@ jobs:
       - name: npm install
         run: npm ci
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+
       - name: Setup Playwright
         run: |
-          npx playwright install-deps
-          npx playwright install
+          npx playwright install --with-deps
 
       - name: Run tests
         run: npm test
