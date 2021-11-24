@@ -39,3 +39,7 @@ export function scrollBelowElement(
 		);
 	});
 }
+
+export function tick(/** @type {import('playwright-core').Page} */ page) {
+	return page.evaluate(() => new Promise(requestAnimationFrame));
+}

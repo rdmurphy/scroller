@@ -3,6 +3,7 @@ import {
 	scrollAboveElement,
 	scrollBelowElement,
 	scrollToTopOfElement,
+	tick,
 } from './helpers.js';
 
 test('should do basic triggering', async ({ page }) => {
@@ -51,7 +52,7 @@ test('should allow for adding and removing listeners', async ({ page }) => {
 	// confirm scrolling doesn't yet activate anything
 	await scrollToTopOfElement(scene);
 	await expect(scene).not.toHaveClass(/active/);
-	await scrollAboveElement(scene);
+	await scrollBelowElement(scene);
 
 	// get the scroller handle
 	const scroller = await page.evaluateHandle('window.scroller');
@@ -61,19 +62,19 @@ test('should allow for adding and removing listeners', async ({ page }) => {
 			d.element.classList.add('active');
 		});
 	});
-	await page.waitForTimeout(15);
+	await tick(page);
 
 	// confirm scrolling now activates
 	await scrollToTopOfElement(scene);
 	await expect(scene).toHaveClass(/active/);
-	await scrollAboveElement(scene);
+	await scrollBelowElement(scene);
 
 	// remove the listener
 	removeHandler.evaluate((fn) => fn());
-	await page.waitForTimeout(15);
+	await tick(page);
 
 	// now shouldn't activate again
 	await scrollToTopOfElement(scene);
 	await expect(scene).not.toHaveClass(/active/);
-	await scrollAboveElement(scene);
+	await scrollBelowElement(scene);
 });
