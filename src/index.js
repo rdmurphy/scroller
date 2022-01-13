@@ -10,7 +10,7 @@
  * @param {import('../index').Options} [options]
  */
 export default function Scroller(scenes, options) {
-	/** @type {Map<string, Set<Handler<T>>>} */
+	/** @type {Map<string, Array<Handler<T>>>} */
 	var events = new Map();
 	var offset = options && options.offset;
 	var prevOffset = 0;
@@ -28,7 +28,7 @@ export default function Scroller(scenes, options) {
 		var handlers = events.get(type);
 
 		if (handlers) {
-			handlers.forEach(function eachHandler(handler) {
+			handlers.slice().map((handler) => {
 				handler(event);
 			});
 		}
@@ -41,16 +41,12 @@ export default function Scroller(scenes, options) {
 		 * @param {Handler<T>} handler callback function to run on emit
 		 */
 		on: function (type, handler) {
-			var handlers = events.get(type) || new Set();
-			handlers.add(handler);
-			events.set(type, handlers);
+			var handlers = events.get(type);
+			handlers ? handlers.push(handler) : events.set(type, [handler]);
 
 			return function off() {
-				// @ts-ignore
 				handlers = events.get(type);
-				if (handlers) {
-					handlers.delete(handler);
-				}
+				handlers && handlers.splice(handlers.indexOf(handler) >>> 0, 1);
 			};
 		},
 

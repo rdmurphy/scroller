@@ -33,13 +33,19 @@
     const scroller = new Scroller(document.querySelectorAll('.scene'), {
       offset: 0.5,
     });
-    window.scroller = scroller;
 
     scroller.on('exit', (d) => {
       d.element.classList.remove('active');
     });
 
     scroller.init();
+
+    window.scroller = scroller;
+    window.addListener = function() {
+      window.removeListener = scroller.on('enter', (d) => {
+        d.element.classList.add('active');
+      });
+    }
   </script>
 </head>
 <body>
