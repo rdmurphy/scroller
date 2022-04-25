@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/rdmurphy/scroller#readme",
   "devDependencies": {
-    "@rdm/prettier-config": "^2.0.0",
+    "@rdm/prettier-config": "^3.0.0",
     "@zeit/git-hooks": "^0.1.4",
     "agadoo": "^2.0.0",
     "bundt": "^1.1.5",
