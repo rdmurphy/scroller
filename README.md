@@ -10,6 +10,10 @@
 
 `@newswire/scroller` is a super-tiny library for your scrollytelling needs.
 
+## Heads up!
+
+`@newswire/scroller` will continue to work great, but I've written a semi-successor to it as a custom element called [`scroll-scene-element`](https://github.com/rdmurphy/scroll-scene-element) that I encourage you to check out! Both are great options for building out your scrollytelling projects.
+
 ## Key features
 
 - 🐜 **Less than 600 bytes** gzipped
