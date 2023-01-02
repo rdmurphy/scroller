@@ -37,7 +37,7 @@
     "@zeit/git-hooks": "^0.1.4",
     "agadoo": "^2.0.0",
     "bundt": "^1.1.5",
-    "documentation": "^13.0.0",
+    "documentation": "^14.0.1",
     "precise-commits": "^1.0.2",
     "prettier": "^2.4.1"
   },
